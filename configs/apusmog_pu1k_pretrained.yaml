@@ -1,0 +1,70 @@
+MAIN:
+  checkpoint_dir: apusmog_pu1k_pretrained
+  log_every: 10
+  batchsize_per_gpu: 1
+  seed: 0
+
+TRAIN:
+  start_epoch: -1
+  max_epoch: 100
+  save_separate_checkpoint_every_epoch: 25
+  loss: ['augmchamfer']
+  lambda_loss: [1]
+  loss_upsampling: ['proj']
+  lambda_loss_upsampling: [0.01]
+
+TEST:
+  test_ckpt: checkpoints/apusmog_pu1k_pretrained/checkpoint.pth
+  test_qualit_compose: True
+  upsampling_factor: 4.0
+
+DATASET:
+  dataset_name: pu1k_test
+  dataset_root_dir: data/
+  dataset_dir: PU1K   # dataset_path = dataset_root_dir/dataset_dir
+  dataset_num_workers: 4
+  test_data_dir: input_2048
+
+MODEL:
+  model_name: apu_smog
+
+  preencoder: pointTransformerFeatureExtr
+  preenc_nsample: 16
+  enc_nlayers: 1
+  enc_dim: 128
+  enc_ffn_dim: 64
+  enc_dropout: 0.0
+  enc_nhead: 4
+  enc_activation: relu
+  
+  dec_nlayers: 2
+  dec_dim: 128
+  dec_ffn_dim: 128
+  dec_dropout: 0.0
+  dec_nhead: 4
+  mlp_dropout: 0.0
+  
+  preenc_npoints: 256
+  pointcloud_npoints: 256
+  nqueries: 256
+  num_pts_patches: 256
+
+  refinement: pointTransformerRefinement
+  ref_blocks: 1
+
+OPTIMIZER:
+  base_lr: 5.0e-4
+  warm_lr: 1.0e-6
+  warm_lr_epochs: 10
+  final_lr: 1.0e-6
+  lr_scheduler: cosine
+  weight_decay: 0.1
+  filter_biases_wd: False
+  clip_gradient: 0.1
+
+AUGMENTATION:
+  rotation_aug: 0.2
+  noise_aug: 0.2
+  scale_aug: False
+  trans_aug: False
+ 
